@@ -2,6 +2,7 @@ name: SeniorTransfer
 main: pers.tany.seniortransfer.Main
 version: 1.0.0
 author: tany
+depend: [ YukiNoaAPI ]
 description: GTA5版接管式传送
 commands:
   SeniorTransfer:
