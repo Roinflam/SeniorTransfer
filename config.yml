@@ -1,0 +1,18 @@
+#传送超过...格时，才会触发传送动画
+GridDistance: 256
+
+#每次起飞的高度
+Height: 25
+
+#起飞次数
+Number: 3
+
+#传送时间（秒）
+Time: 0.75
+
+#跨越世界传送是否启用动画
+EnableWorldAnimation: true
+
+#在这些世界传送不启用动画
+DisableWorlds:
+  - '世界名称'
