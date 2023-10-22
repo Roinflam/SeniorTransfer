@@ -120,7 +120,7 @@ public class Events implements Listener {
                                 if (finalI == 0) {
                                     try {
                                         GameMode gameMode = player.getGameMode();
-                                        player.setGameMode(GameMode.valueOf("SPECTATOR"));
+                                        player.setGameMode(GameMode.SPECTATOR);
                                         new BukkitRunnable() {
 
                                             @Override
@@ -129,12 +129,12 @@ public class Events implements Listener {
                                                     player.setGameMode(gameMode);
                                                     this.cancel();
                                                 } else {
-                                                    player.setGameMode(GameMode.valueOf("SPECTATOR"));
+                                                    player.setGameMode(GameMode.SPECTATOR);
                                                 }
                                             }
 
-                                        }.runTaskTimerAsynchronously(Main.plugin, 1, 1);
-                                    } catch (Exception e) {
+                                        }.runTaskTimer(Main.plugin, 1, 1);
+                                    } catch (Exception ignored) {
 
                                     }
                                 }
@@ -200,7 +200,7 @@ public class Events implements Listener {
                     }
                 }
 
-            }.runTaskAsynchronously(Main.plugin);
+            }.runTask(Main.plugin);
         }
     }
 

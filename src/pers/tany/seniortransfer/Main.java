@@ -1,6 +1,7 @@
 package pers.tany.seniortransfer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -9,6 +10,8 @@ import pers.tany.seniortransfer.command.Commands;
 import pers.tany.seniortransfer.listenevent.Events;
 import pers.tany.yukinoaapi.interfacepart.configuration.IConfig;
 import pers.tany.yukinoaapi.interfacepart.register.IRegister;
+
+import java.util.ArrayList;
 
 
 public class Main extends JavaPlugin {
@@ -31,10 +34,12 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (String name : Events.tp.keySet()) {
+        for (String name : new ArrayList<>(Events.tp.keySet())) {
             if (Bukkit.getPlayerExact(name) != null) {
                 Player player = Bukkit.getPlayerExact(name);
-                player.teleport(Events.tp.get(name));
+                Location location = Events.tp.get(name);
+                Events.tp.remove(name);
+                player.teleport(location);
             }
         }
         Bukkit.getConsoleSender().sendMessage("§7[§fSeniorTransfer§7]§c已卸载");
