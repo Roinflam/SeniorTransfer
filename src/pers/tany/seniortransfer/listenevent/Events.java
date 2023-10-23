@@ -18,21 +18,24 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Events implements Listener {
-    public static HashMap<String, Location> tp = new HashMap<>();
+    public static HashMap<String, Location> tpHashMap = new HashMap<>();
+    public static HashMap<String, GameMode> gameModeHashMap = new HashMap<>();
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent evt) {
+    public void onPlayerJoin(PlayerJoinEvent evt) {
         Player player = evt.getPlayer();
-        if (tp.containsKey(player.getName())) {
-            player.teleport(tp.get(player.getName()));
-            tp.remove(player.getName());
+        if (tpHashMap.containsKey(player.getName())) {
+            player.teleport(tpHashMap.get(player.getName()));
+            tpHashMap.remove(player.getName());
+            player.setGameMode(gameModeHashMap.getOrDefault(player.getName(), GameMode.SURVIVAL));
+            gameModeHashMap.remove(player.getName());
         }
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent evt) {
         Player player = evt.getPlayer();
-        if (tp.containsKey(player.getName())) {
+        if (tpHashMap.containsKey(player.getName())) {
             evt.setCancelled(true);
         }
     }
@@ -40,7 +43,7 @@ public class Events implements Listener {
     @EventHandler
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent evt) {
         Player player = evt.getPlayer();
-        if (tp.containsKey(player.getName())) {
+        if (tpHashMap.containsKey(player.getName())) {
             evt.setCancelled(true);
         }
     }
@@ -48,7 +51,7 @@ public class Events implements Listener {
     @EventHandler
     public void onAsyncPlayerChat(AsyncPlayerChatEvent evt) {
         Player player = evt.getPlayer();
-        if (tp.containsKey(player.getName())) {
+        if (tpHashMap.containsKey(player.getName())) {
             evt.setCancelled(true);
         }
     }
@@ -63,7 +66,8 @@ public class Events implements Listener {
             return;
         }
         evt.getTo().getChunk().load();
-        if (!tp.containsKey(player.getName()) && (evt.getCause().equals(PlayerTeleportEvent.TeleportCause.COMMAND) || evt.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN))) {
+        if (!tpHashMap.containsKey(player.getName()) && (evt.getCause().equals(PlayerTeleportEvent.TeleportCause.COMMAND) || evt.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN))) {
+            GameMode gameMode = player.getGameMode();
             if (evt.getFrom().getWorld().equals(evt.getTo().getWorld())) {
                 if (ILocation.getFarGrid(evt.getFrom(), evt.getTo(), false) < Main.config.getInt("GridDistance")) {
                     return;
@@ -109,7 +113,7 @@ public class Events implements Listener {
                         toLocation.add(location);
                     }
                     toLocation.add(evt.getTo());
-                    tp.put(player.getName(), evt.getTo());
+                    tpHashMap.put(player.getName(), evt.getTo());
 
                     for (int i = 0; i < fromLocation.size(); i++) {
                         int finalI = i;
@@ -119,13 +123,12 @@ public class Events implements Listener {
                             public void run() {
                                 if (finalI == 0) {
                                     try {
-                                        GameMode gameMode = player.getGameMode();
                                         player.setGameMode(GameMode.SPECTATOR);
                                         new BukkitRunnable() {
 
                                             @Override
                                             public void run() {
-                                                if (!tp.containsKey(player.getName())) {
+                                                if (!tpHashMap.containsKey(player.getName())) {
                                                     player.setGameMode(gameMode);
                                                     this.cancel();
                                                 } else {
@@ -157,7 +160,11 @@ public class Events implements Listener {
                                         public void run() {
                                             player.teleport(toLocation.get(finalI));
                                             if (finalI == toLocation.size() - 1) {
-                                                tp.remove(player.getName());
+                                                if (player.isOnline()) {
+                                                    tpHashMap.remove(player.getName());
+                                                } else {
+                                                    gameModeHashMap.put(player.getName(), gameMode);
+                                                }
                                             }
                                         }
 
@@ -185,7 +192,11 @@ public class Events implements Listener {
                                                 public void run() {
                                                     player.teleport(toLocation.get(finalI));
                                                     if (finalI == toLocation.size() - 1) {
-                                                        tp.remove(player.getName());
+                                                        if (player.isOnline()) {
+                                                            tpHashMap.remove(player.getName());
+                                                        } else {
+                                                            gameModeHashMap.put(player.getName(), gameMode);
+                                                        }
                                                     }
                                                 }
 

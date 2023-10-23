@@ -34,11 +34,11 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        for (String name : new ArrayList<>(Events.tp.keySet())) {
+        for (String name : new ArrayList<>(Events.tpHashMap.keySet())) {
             if (Bukkit.getPlayerExact(name) != null) {
                 Player player = Bukkit.getPlayerExact(name);
-                Location location = Events.tp.get(name);
-                Events.tp.remove(name);
+                Location location = Events.tpHashMap.get(name);
+                Events.tpHashMap.remove(name);
                 player.teleport(location);
             }
         }
