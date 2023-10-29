@@ -13,6 +13,17 @@ Time: 0.75
 #跨越世界传送是否启用动画
 EnableWorldAnimation: true
 
-#在这些世界传送不启用动画
-DisableWorlds:
+#是否在传送时禁用聊天
+DisableChat: false
+
+#是否在传送时禁用指令
+DiasbleCommand: true
+
+#在这些世界传送(不)启用动画
+Worlds:
   - '世界名称'
+
+#黑白名单切换
+#如果为true上面的名单为黑名单，不生效的世界
+#如果为false上面的名单为白名单，仅生效的世界
+WhiteOrBlackList: true
