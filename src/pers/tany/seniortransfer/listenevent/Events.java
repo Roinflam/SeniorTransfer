@@ -56,7 +56,7 @@ public class Events implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent evt) {
         Player player = evt.getPlayer();
         if (!Main.config.getBoolean("EnableWorldAnimation") && !evt.getTo().getWorld().equals(evt.getFrom().getWorld())) {
@@ -72,6 +72,7 @@ public class Events implements Listener {
             }
         }
         if (!tpHashMap.containsKey(player.getName()) && (evt.getCause().equals(PlayerTeleportEvent.TeleportCause.COMMAND) || evt.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN))) {
+            Location from = evt.getFrom();
             GameMode gameMode = player.getGameMode();
             boolean fly = player.getAllowFlight();
             if (evt.getFrom().getWorld().equals(evt.getTo().getWorld())) {
@@ -212,13 +213,18 @@ public class Events implements Listener {
 
                                         @Override
                                         public void run() {
-                                            player.teleport(toLocation.get(finalI));
                                             if (finalI == toLocation.size() - 1) {
                                                 if (player.isOnline()) {
+                                                    if (Main.config.getBoolean("BackFix")) {
+                                                        player.teleport(from);
+                                                    }
+                                                    player.teleport(toLocation.get(finalI));
                                                     tpHashMap.remove(player.getName());
                                                 } else {
                                                     gameModeHashMap.put(player.getName(), gameMode);
                                                 }
+                                            } else {
+                                                player.teleport(toLocation.get(finalI));
                                             }
                                         }
 

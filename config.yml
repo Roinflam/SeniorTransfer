@@ -19,6 +19,9 @@ DisableChat: false
 #是否在传送时禁用指令
 DiasbleCommand: true
 
+#是否开启back指令修复（如果你使用ess或者cmi基础插件中，在使用back指令后出现问题，可尝试开启此功能）
+BackFix: false
+
 #在这些世界传送(不)启用动画
 Worlds:
   - '世界名称'
