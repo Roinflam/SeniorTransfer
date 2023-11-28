@@ -38,7 +38,7 @@ public class Events implements Listener {
         if (tpHashMap.containsKey(player.getName())) {
             Location from = evt.getFrom();
             Location to = evt.getTo();
-            if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getY() - to.getY() < 0.0D)
+            if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getBlockY() != to.getBlockY())
                 evt.setTo(evt.getFrom());
         }
     }
