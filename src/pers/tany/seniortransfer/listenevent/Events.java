@@ -36,7 +36,10 @@ public class Events implements Listener {
     public void onPlayerMove(PlayerMoveEvent evt) {
         Player player = evt.getPlayer();
         if (tpHashMap.containsKey(player.getName())) {
-            evt.setCancelled(true);
+            Location from = evt.getFrom();
+            Location to = evt.getTo();
+            if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getY() - to.getY() < 0.0D)
+                evt.setTo(evt.getFrom());
         }
     }
 
