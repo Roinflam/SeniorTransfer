@@ -1,26 +1,25 @@
 #传送超过...格时，才会触发传送动画
 GridDistance: 256
-
 #每次起飞的高度
 Height: 25
-
 #起飞次数
 Number: 3
-
 #传送时间（秒）
 Time: 0.75
-
 #跨越世界传送是否启用动画
 EnableWorldAnimation: true
 
 #是否在传送时禁用聊天
 DisableChat: false
-
 #是否在传送时禁用指令
 DiasbleCommand: true
 
+#是否锁定视角（false后视角可以抬高，但是不能抬头）
+HeadUpLimit: true
 #是否开启back指令修复（如果你使用ess或者cmi基础插件中，在使用back指令后出现问题，可尝试开启此功能）
 BackFix: false
+#是否启用CMI修复（如果传送有提示报错的话请改成true）
+CMIFix: false
 
 #在这些世界传送(不)启用动画
 Worlds:
@@ -30,3 +29,6 @@ Worlds:
 #如果为true上面的名单为黑名单，不生效的世界
 #如果为false上面的名单为白名单，仅生效的世界
 WhiteOrBlackList: true
+
+
+#拥有st.ignore权限的玩家不会触发

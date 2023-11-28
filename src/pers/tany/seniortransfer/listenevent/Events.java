@@ -36,7 +36,15 @@ public class Events implements Listener {
     public void onPlayerMove(PlayerMoveEvent evt) {
         Player player = evt.getPlayer();
         if (tpHashMap.containsKey(player.getName())) {
-            evt.setCancelled(true);
+            if (Main.config.getBoolean("HeadUpLimit")) {
+                evt.setCancelled(true);
+            } else {
+                Location from = evt.getFrom();
+                Location to = evt.getTo();
+                if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getBlockY() != to.getBlockY()) {
+                    evt.setTo(evt.getFrom());
+                }
+            }
         }
     }
 
@@ -59,6 +67,9 @@ public class Events implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent evt) {
         Player player = evt.getPlayer();
+        if (!player.isOp() && player.hasPermission("st.ignore")) {
+            return;
+        }
         if (!Main.config.getBoolean("EnableWorldAnimation") && !evt.getTo().getWorld().equals(evt.getFrom().getWorld())) {
             return;
         }
@@ -74,14 +85,26 @@ public class Events implements Listener {
         if (!tpHashMap.containsKey(player.getName()) && (evt.getCause().equals(PlayerTeleportEvent.TeleportCause.COMMAND) || evt.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN))) {
             Location from = evt.getFrom();
             GameMode gameMode = player.getGameMode();
-            boolean fly = player.getAllowFlight();
+            boolean allowFlight = player.getAllowFlight();
+            boolean flying = player.isFlying();
             if (evt.getFrom().getWorld().equals(evt.getTo().getWorld())) {
                 if (ILocation.getFarGrid(evt.getFrom(), evt.getTo(), false) < Main.config.getInt("GridDistance")) {
                     return;
                 }
             }
             evt.getTo().getChunk().load();
-            evt.setCancelled(true);
+            if (Main.config.getBoolean("CMIFix")) {
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+                        player.teleport(from);
+
+                    }
+                }.runTask(Main.plugin);
+            } else {
+                evt.setCancelled(true);
+            }
             List<Location> fromLocation = new ArrayList<>();
             List<Location> toLocation = new ArrayList<>();
             int allNumber = 0;
@@ -151,8 +174,8 @@ public class Events implements Listener {
                                     public void run() {
                                         if (!tpHashMap.containsKey(player.getName())) {
                                             player.setGameMode(gameMode);
-                                            player.setAllowFlight(fly);
-                                            player.setFlying(fly);
+                                            player.setAllowFlight(allowFlight);
+                                            player.setFlying(flying);
                                             this.cancel();
                                         } else {
                                             player.setGameMode(GameMode.SURVIVAL);
@@ -215,9 +238,9 @@ public class Events implements Listener {
                                         public void run() {
                                             if (finalI == toLocation.size() - 1) {
                                                 if (player.isOnline()) {
-                                                    if (Main.config.getBoolean("BackFix")) {
-                                                        player.teleport(from);
-                                                    }
+//                                                    if (Main.config.getBoolean("BackFix")) {
+                                                    player.teleport(from);
+//                                                    }
                                                     player.teleport(toLocation.get(finalI));
                                                     tpHashMap.remove(player.getName());
                                                 } else {
