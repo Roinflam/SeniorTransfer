@@ -36,7 +36,10 @@ public class Events implements Listener {
     public void onPlayerMove(PlayerMoveEvent evt) {
         Player player = evt.getPlayer();
         if (tpHashMap.containsKey(player.getName())) {
-            evt.setCancelled(true);
+            Location from = evt.getFrom();
+            Location to = evt.getTo();
+            if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getBlockY() != to.getBlockY())
+                evt.setTo(evt.getFrom());
         }
     }
 
@@ -74,7 +77,8 @@ public class Events implements Listener {
         if (!tpHashMap.containsKey(player.getName()) && (evt.getCause().equals(PlayerTeleportEvent.TeleportCause.COMMAND) || evt.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN))) {
             Location from = evt.getFrom();
             GameMode gameMode = player.getGameMode();
-            boolean fly = player.getAllowFlight();
+            boolean allowFlight = player.getAllowFlight();
+            boolean flying = player.isFlying();
             if (evt.getFrom().getWorld().equals(evt.getTo().getWorld())) {
                 if (ILocation.getFarGrid(evt.getFrom(), evt.getTo(), false) < Main.config.getInt("GridDistance")) {
                     return;
@@ -151,8 +155,8 @@ public class Events implements Listener {
                                     public void run() {
                                         if (!tpHashMap.containsKey(player.getName())) {
                                             player.setGameMode(gameMode);
-                                            player.setAllowFlight(fly);
-                                            player.setFlying(fly);
+                                            player.setAllowFlight(allowFlight);
+                                            player.setFlying(flying);
                                             this.cancel();
                                         } else {
                                             player.setGameMode(GameMode.SURVIVAL);
