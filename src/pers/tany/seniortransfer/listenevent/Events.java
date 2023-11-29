@@ -41,13 +41,13 @@ public class Events implements Listener {
     public void onPlayerMove(PlayerMoveEvent evt) {
         Player player = evt.getPlayer();
         if (tpHashMap.containsKey(player.getName())) {
+            Location from = evt.getFrom();
             if (Main.config.getBoolean("HeadUpLimit")) {
-                evt.setCancelled(true);
+                evt.setTo(from);
             } else {
-                Location from = evt.getFrom();
                 Location to = evt.getTo();
                 if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getBlockY() != to.getBlockY()) {
-                    evt.setTo(evt.getFrom());
+                    evt.setTo(from);
                 }
             }
         }
