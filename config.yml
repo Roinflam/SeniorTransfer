@@ -30,5 +30,12 @@ Worlds:
 #如果为false上面的名单为白名单，仅生效的世界
 WhiteOrBlackList: true
 
+#是否启用执行了对应指令后的传送才启用动画
+EnableOnlyCommand: false
+
+#使用这些指令后启用动画（配置的指令请填小写）
+OnlyCommands:
+  - '/tpr'
+
 
 #拥有st.ignore权限的玩家不会触发

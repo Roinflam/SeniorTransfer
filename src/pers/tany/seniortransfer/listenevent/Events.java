@@ -20,6 +20,7 @@ import java.util.List;
 public class Events implements Listener {
     public static HashMap<String, Location> tpHashMap = new HashMap<>();
     public static HashMap<String, GameMode> gameModeHashMap = new HashMap<>();
+    public static ArrayList<String> allowTpArrayList = new ArrayList<>();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent evt) {
@@ -30,19 +31,23 @@ public class Events implements Listener {
             player.setGameMode(gameModeHashMap.getOrDefault(player.getName(), GameMode.SURVIVAL));
             gameModeHashMap.remove(player.getName());
         }
+        // 缓存的允许传送列表删除刚加入服务器的玩家
+        if (Main.config.getBoolean("EnableOnlyCommand", false)) {
+            allowTpArrayList.remove(player.getName());
+        }
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent evt) {
         Player player = evt.getPlayer();
         if (tpHashMap.containsKey(player.getName())) {
+            Location from = evt.getFrom();
             if (Main.config.getBoolean("HeadUpLimit")) {
-                evt.setCancelled(true);
+                evt.setTo(from);
             } else {
-                Location from = evt.getFrom();
                 Location to = evt.getTo();
                 if (from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ() || from.getBlockY() != to.getBlockY()) {
-                    evt.setTo(evt.getFrom());
+                    evt.setTo(from);
                 }
             }
         }
@@ -53,6 +58,14 @@ public class Events implements Listener {
         Player player = evt.getPlayer();
         if (tpHashMap.containsKey(player.getName()) && Main.config.getBoolean("DiasbleCommand")) {
             evt.setCancelled(true);
+        }
+        // 使用了对应指令后加入允许传送列表
+        if (Main.config.getBoolean("EnableOnlyCommand", false)) {
+            if (Main.config.getStringList("OnlyCommands").contains(evt.getMessage().split(" ")[0].toLowerCase())) {
+                if (!allowTpArrayList.contains(player.getName())) {
+                    allowTpArrayList.add(player.getName());
+                }
+            }
         }
     }
 
@@ -79,6 +92,14 @@ public class Events implements Listener {
             }
         } else {
             if (!Main.config.getStringList("Worlds").contains(evt.getTo().getWorld().getName())) {
+                return;
+            }
+        }
+        // 在允许传送列表内的传送才会触发动画
+        if (Main.config.getBoolean("EnableOnlyCommand", false)) {
+            if (allowTpArrayList.contains(player.getName())) {
+                allowTpArrayList.remove(player.getName());
+            } else {
                 return;
             }
         }
