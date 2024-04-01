@@ -32,7 +32,6 @@ WhiteOrBlackList: true
 
 #是否启用执行了对应指令后的传送才启用动画
 EnableOnlyCommand: false
-
 #使用这些指令后启用动画（配置的指令请填小写）
 OnlyCommands:
   - '/tpr'

@@ -61,11 +61,19 @@ public class Events implements Listener {
         }
         // 使用了对应指令后加入允许传送列表
         if (Main.config.getBoolean("EnableOnlyCommand", false)) {
-            if (Main.config.getStringList("OnlyCommands").contains(evt.getMessage().split(" ")[0].toLowerCase())) {
-                if (!allowTpArrayList.contains(player.getName())) {
-                    allowTpArrayList.add(player.getName());
+            for (String command : Main.config.getStringList("OnlyCommands")) {
+                if (evt.getMessage().toLowerCase().contains(command.toLowerCase())) {
+                    if (!allowTpArrayList.contains(player.getName())) {
+                        allowTpArrayList.add(player.getName());
+                    }
+                    break;
                 }
             }
+//            if (Main.config.getStringList("OnlyCommands").contains(evt.getMessage().toLowerCase())) {
+//                if (!allowTpArrayList.contains(player.getName())) {
+//                    allowTpArrayList.add(player.getName());
+//                }
+//            }
         }
     }
 
@@ -96,7 +104,7 @@ public class Events implements Listener {
             }
         }
         // 在允许传送列表内的传送才会触发动画
-        if (Main.config.getBoolean("EnableOnlyCommand", false)) {
+        if (Main.config.getBoolean("EnableOnlyCommand")) {
             if (allowTpArrayList.contains(player.getName())) {
                 allowTpArrayList.remove(player.getName());
             } else {
