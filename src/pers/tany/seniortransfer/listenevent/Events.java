@@ -180,7 +180,7 @@ public class Events implements Listener {
                         if (finalI == 0) {
                             try {
                                 if (Main.config.getBoolean("DisableSpectators")) {
-                                    throw new NumberFormatException();
+                                    throw new NoSuchFieldError();
                                 }
                                 player.setGameMode(GameMode.SPECTATOR);
                                 new BukkitRunnable() {
