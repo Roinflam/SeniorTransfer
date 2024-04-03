@@ -179,6 +179,9 @@ public class Events implements Listener {
                     public void run() {
                         if (finalI == 0) {
                             try {
+                                if (Main.config.getBoolean("DisableSpectators")) {
+                                    throw new NumberFormatException();
+                                }
                                 player.setGameMode(GameMode.SPECTATOR);
                                 new BukkitRunnable() {
 

@@ -20,6 +20,8 @@ HeadUpLimit: true
 BackFix: false
 #是否启用CMI修复（如果传送有提示报错的话请改成true）
 CMIFix: false
+#禁用旁观者模式
+DisableSpectators: false
 
 #在这些世界传送(不)启用动画
 Worlds:
